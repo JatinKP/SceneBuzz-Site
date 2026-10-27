@@ -79,7 +79,8 @@ def sec(h,s,inner,cls=''):
   return f'<section{c}><div class=w><h2>{h}</h2>{sub}{inner}</div></section>'
 def clip(stem,label,caption,w,h,lazy=False):
   lazy_attr=' loading=lazy' if lazy else ''
-  return f'<figure class=phone><video width={w} height={h} poster=assets/{stem}-poster.jpg autoplay muted loop playsinline preload=metadata{lazy_attr} aria-label="{label}"><source src=assets/{stem}.webm type=video/webm><source src=assets/{stem}.mp4 type=video/mp4></video><figcaption>{caption}</figcaption></figure>'
+  v='?v=2' if stem in ('scenebuzz-slideshow','scenebuzz-setup') else ''
+  return f'<figure class=phone><video width={w} height={h} poster=assets/{stem}-poster.jpg{v} autoplay muted loop playsinline preload=metadata{lazy_attr} aria-label="{label}"><source src=assets/{stem}.webm{v} type=video/webm><source src=assets/{stem}.mp4{v} type=video/mp4></video><figcaption>{caption}</figcaption></figure>'
 def demo():
   return clip('scenebuzz-settings','SceneBuzz Settings, scrolling through Basic, Advanced, and Biz Mode','Settings',540,854,lazy=True)
 def stills(items):
