@@ -1,6 +1,6 @@
 # Edit this file, then rebuild with: python3 build.py
 # images/ holds the app icon, share image, and screenshots. It is not generated here.
-import os
+import os, shutil
 I={'frame':'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>','home':'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>','biz':'<path d="M4 9h16l-1-5H5zM5 9v11h14V9M9 20v-6h6v6"/>','folder':'<path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>','sync':'<path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2M20 4v5h-5M4 20v-5h5"/>','clock':'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>','fit':'<rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="10" height="10" rx="1"/>','logo':'<path d="M4 6h16v12H4z"/><path d="M14 9h4v3h-4z"/>','user':'<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20a6 6 0 0 1 12 0M15 20a4 4 0 0 1 6-3"/>','bolt':'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>','help':'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/>','play':'<path d="M7 4l13 8-13 8z"/>','loop':'<path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>','music':'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>','pin':'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>','log':'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'}
 def ic(n):return f'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{I[n]}</svg>'
 NAV=[('index.html','Home'),('home.html','For Home'),('business.html','For Business'),('how-it-works.html','How it works'),('features.html','Features'),('screenshots.html','Screenshots'),('faq.html','Help & FAQ')]
@@ -42,8 +42,14 @@ details{border:1px solid #f3f4f6;border-radius:12px;padding:12px 16px;margin-bot
 footer{background:#f9fafb;border-top:1px solid #e5e7eb;color:#4b5563;padding:28px 0 22px;font-size:14px;text-align:center}footer .w>div:first-child{padding-bottom:14px;border-bottom:1px solid #e5e7eb;margin-bottom:14px}
 footer b{color:#111827!important;font-size:16px}footer a{text-decoration:none;margin:0 9px;color:#4b5563}footer .w>div:last-child a:first-child,footer a[href^=mailto]{color:#ea580c}footer a:hover{color:#ea580c}
 .prose{max-width:760px}.prose h3{margin-top:22px}
+.adjust{display:grid;grid-template-columns:minmax(180px,250px) 1fr;gap:22px;align-items:center}
+.phone{margin:0 auto;width:100%;max-width:250px;background:#1f2937;border-radius:28px;padding:10px 10px 16px;box-shadow:0 8px 18px rgba(17,24,39,.14)}
+.phone video{display:block;width:100%;height:auto;aspect-ratio:540/854;object-fit:contain;border-radius:18px;background:#000}
+.phone figcaption{margin:8px 0 0;text-align:center;color:#e5e7eb;font-size:12px;font-weight:600}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0;padding:0;list-style:none}
+.opts li{background:#fff;border:1px solid #f3f4f6;border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;color:#111827}
 @media(max-width:980px){.g4{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:820px){nav{display:none}.doors,.g3,.shots.c3,.shots.c2{grid-template-columns:1fr}.hero{padding:16px 0 20px}section{padding:26px 0}header .w{height:64px}}
+@media(max-width:820px){nav{display:none}.doors,.g3,.shots.c3,.shots.c2,.adjust{grid-template-columns:1fr}.hero{padding:16px 0 20px}section{padding:26px 0}header .w{height:64px}.phone{max-width:220px}}
 @media(max-width:520px){.g4,.g2{grid-template-columns:1fr}}'''
 def page(f,title,body,desc=DESC):
   nav=''.join(f'<a href="{h}"{" class=on" if h==f else ""}>{t}</a>' for h,t in NAV[1:])
@@ -64,6 +70,9 @@ def sec(h,s,inner,cls=''):
   sub=f'<p class=sub>{s}</p>' if s else ''
   c=f' class="{cls}"' if cls else ''
   return f'<section{c}><div class=w><h2>{h}</h2>{sub}{inner}</div></section>'
+DEMO='SceneBuzz Settings, scrolling through Basic, Advanced, and Biz Mode'
+def demo():
+  return f'<figure class=phone><video width=540 height=854 poster=assets/scenebuzz-settings-poster.jpg autoplay muted loop playsinline preload=metadata loading=lazy aria-label="{DEMO}"><source src=assets/scenebuzz-settings.webm type=video/webm><source src=assets/scenebuzz-settings.mp4 type=video/mp4></video><figcaption>Settings</figcaption></figure>'
 def shots(items,cols):
   figs=''.join(f'<figure class=shot><img src=images/{src} alt="{alt}" width={w} height={ht}><figcaption>{cap}</figcaption></figure>' for src,alt,cap,w,ht in items)
   return f'<div class="shots c{cols}">{figs}</div>'
@@ -87,7 +96,9 @@ page('business.html','For Business',hero('Signage, <span class=acc>without the s
  sec('Biz Mode','Kiosk lock, a proof-of-play log, and Library Sync over Wi-Fi.',f'<div class=stack>{shots([S_BIZ,S_PLAY],2)}{cards(BIZ_X,3)}</div>','dark'),'Biz Mode adds a PIN kiosk lock, a proof-of-play log, and Library Sync over Wi-Fi.')
 page('how-it-works.html','How it works',hero('Up and running <span class=acc>in minutes.</span>','Four steps. No account maze.','')+
  sec('How it works','',f'<div class="g g4 steps">'+''.join(f'<div class="card step"><h3>{a}</h3><p>{b}</p></div>' for a,b in [('Install','Get SceneBuzz on your Android device.'),('Pick a folder','Tap your Camera folder, or browse other folders.'),('Tune it','Set photo time, transitions and fit mode.'),('Press play','Your show starts. Library Sync can refresh it over Wi-Fi.')])+'</div>'+PLAY.replace('class=soon','class=soon style="color:#6d655c"')),'Four steps. No account maze.')
+ADJUST=['Display orientation','Clock and date overlay','Silence alerts','Transition style','Prefer faces when cropping','Background music','Auto-start on boot','Proof of play','Library Sync over Wi-Fi','A PIN to exit or change settings']
 page('features.html','Features',hero('Everything you need. <span class=acc>Nothing you don’t.</span>','The full feature list.','')+
+ sec('Everything is adjustable','Basic, Advanced, and Biz Mode.',f'<div class=adjust>{demo()}<ul class=opts>'+''.join(f'<li>{t}</li>' for t in ADJUST)+'</ul></div>','dark')+
  sec('Features','',cards(F,4))+
  sec('In the app','Loop, resume, background music, and Biz Mode, as they appear in the app.',f'<div class=stack>{cards(APP_X,3)}{shots([S_PLAY,S_HOME,S_PROFILE,S_BIZ],2)}</div>','dark'),'SceneBuzz features, including loop, resume, background music, and Biz Mode.')
 page('screenshots.html','Screenshots',hero('A look <span class=acc>inside.</span>','Slideshow, slide profiles, profile settings, and Biz Mode.','')+
@@ -98,3 +109,15 @@ page('privacy.html','Privacy',hero('Privacy policy','<span class=draft>DRAFT</sp
 open('style.css','w').write(CSS)
 for stale in ('devices.html','help.html'):
   if os.path.exists(stale): os.remove(stale)
+# Web-ready demo only (about 1.2MB each). Copy into assets/ next to the pages.
+def publish_assets():
+  root=os.path.dirname(os.path.abspath(__file__))
+  src_dir=os.path.join(root,'assets')
+  out_dir=os.path.join(os.getcwd(),'assets')
+  os.makedirs(out_dir,exist_ok=True)
+  for name in ('scenebuzz-settings.webm','scenebuzz-settings.mp4','scenebuzz-settings-poster.jpg'):
+    src=os.path.join(src_dir,name)
+    dst=os.path.join(out_dir,name)
+    if not os.path.isfile(src): raise SystemExit('missing '+src)
+    if os.path.abspath(src)!=os.path.abspath(dst): shutil.copy2(src,dst)
+publish_assets()
