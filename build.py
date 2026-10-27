@@ -16,6 +16,8 @@ header .w{display:flex;align-items:center;justify-content:space-between;height:6
 nav a{text-decoration:none;font-size:14px;font-weight:500;color:#4b5563;margin-left:16px}nav a:hover,nav a.on{color:#ea580c}
 .hero{background:linear-gradient(135deg,#fff7ed,#fefce8);text-align:center;padding:20px 0 24px}
 .hero h1{font-size:clamp(30px,4vw,44px)}.hero p.lead{font-size:17px;color:#374151;max-width:620px;margin:0 auto}.acc{color:#ea580c}
+.hero-row{display:grid;grid-template-columns:210px minmax(0,520px);gap:28px;align-items:center;justify-content:center;text-align:left}
+.hero-row h1,.hero-row p.lead{text-align:left}.hero-row p.lead{margin:0;max-width:34em}.hero-row .phone{max-width:210px}
 .appicon{width:120px;height:120px;display:block;margin:0 auto 8px;filter:drop-shadow(0 8px 16px rgba(234,88,12,.3))}
 .btn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;border-radius:10px;padding:10px 18px;font-weight:600;font-size:15px}
 .play{background:#111827;color:#fff;margin-top:14px}.play small{display:block;font-size:10px;letter-spacing:.08em;font-weight:500;opacity:.8}.play span{line-height:1.15;text-align:left}.soon{font-size:13px;color:#6b7280;margin:6px 0 0}
@@ -44,12 +46,13 @@ footer b{color:#111827!important;font-size:16px}footer a{text-decoration:none;ma
 .prose{max-width:760px}.prose h3{margin-top:22px}
 .adjust{display:grid;grid-template-columns:minmax(180px,250px) 1fr;gap:22px;align-items:center}
 .phone{margin:0 auto;width:100%;max-width:250px;background:#1f2937;border-radius:28px;padding:10px 10px 16px;box-shadow:0 8px 18px rgba(17,24,39,.14)}
-.phone video{display:block;width:100%;height:auto;aspect-ratio:540/854;object-fit:contain;border-radius:18px;background:#000}
+.phone video{display:block;width:100%;height:auto;object-fit:contain;border-radius:18px;background:#000}
+.adjust .steps{grid-template-columns:1fr 1fr}
 .phone figcaption{margin:8px 0 0;text-align:center;color:#e5e7eb;font-size:12px;font-weight:600}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0;padding:0;list-style:none}
 .opts li{background:#fff;border:1px solid #f3f4f6;border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;color:#111827}
 @media(max-width:980px){.g4{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:820px){nav{display:none}.doors,.g3,.shots.c3,.shots.c2,.adjust{grid-template-columns:1fr}.hero{padding:16px 0 20px}section{padding:26px 0}header .w{height:64px}.phone{max-width:220px}}
+@media(max-width:820px){nav{display:none}.doors,.g3,.shots.c3,.shots.c2,.adjust,.hero-row{grid-template-columns:1fr}.hero{padding:16px 0 18px}section{padding:26px 0}header .w{height:64px}.phone{max-width:200px}.hero-row{text-align:center;justify-items:center;gap:12px}.hero-row h1,.hero-row p.lead{text-align:center}.hero-row p.lead{margin:0 auto}.hero-row .phone{max-width:168px}}
 @media(max-width:520px){.g4,.g2{grid-template-columns:1fr}}'''
 def page(f,title,body,desc=DESC):
   nav=''.join(f'<a href="{h}"{" class=on" if h==f else ""}>{t}</a>' for h,t in NAV[1:])
@@ -61,18 +64,21 @@ def page(f,title,body,desc=DESC):
 <link rel=stylesheet href=style.css></head><body>
 <header><div class=w><a class=brand href=index.html><img src=images/icon.png alt="" width=48 height=48>SceneBuzz</a><nav>{nav}</nav></div></header>{body}
 <footer><div class=w><div><b style="color:#f4efe8">SceneBuzz</b> · an Android app · <a href="mailto:support@389.one">support@389.one</a></div><div>{fl}</div></div></footer></body></html>''')
-def hero(t,l,extra=PLAY,icon=False):
+def hero(t,l,extra=PLAY,icon=False,media=''):
   mark='<img class=appicon src=images/icon.png alt="" width=120 height=120>' if icon else ''
   lead=f'<p class=lead>{l}</p>' if l else ''
+  if media: return f'<div class=hero><div class="w hero-row">{media}<div class=hero-copy><h1>{t}</h1>{lead}{extra}</div></div></div>'
   return f'<div class=hero><div class=w>{mark}<h1>{t}</h1>{lead}{extra}</div></div>'
 def cards(items,cols):return f'<div class="g g{cols}">'+''.join(f'<div class=card>{ic(i)}<h3>{h}</h3><p>{p}</p></div>' for i,h,p in items)+'</div>'
 def sec(h,s,inner,cls=''):
   sub=f'<p class=sub>{s}</p>' if s else ''
   c=f' class="{cls}"' if cls else ''
   return f'<section{c}><div class=w><h2>{h}</h2>{sub}{inner}</div></section>'
-DEMO='SceneBuzz Settings, scrolling through Basic, Advanced, and Biz Mode'
+def clip(stem,label,caption,w,h,lazy=False):
+  lazy_attr=' loading=lazy' if lazy else ''
+  return f'<figure class=phone><video width={w} height={h} poster=assets/{stem}-poster.jpg autoplay muted loop playsinline preload=metadata{lazy_attr} aria-label="{label}"><source src=assets/{stem}.webm type=video/webm><source src=assets/{stem}.mp4 type=video/mp4></video><figcaption>{caption}</figcaption></figure>'
 def demo():
-  return f'<figure class=phone><video width=540 height=854 poster=assets/scenebuzz-settings-poster.jpg autoplay muted loop playsinline preload=metadata loading=lazy aria-label="{DEMO}"><source src=assets/scenebuzz-settings.webm type=video/webm><source src=assets/scenebuzz-settings.mp4 type=video/mp4></video><figcaption>Settings</figcaption></figure>'
+  return clip('scenebuzz-settings','SceneBuzz Settings, scrolling through Basic, Advanced, and Biz Mode','Settings',540,854,lazy=True)
 def shots(items,cols):
   figs=''.join(f'<figure class=shot><img src=images/{src} alt="{alt}" width={w} height={ht}><figcaption>{cap}</figcaption></figure>' for src,alt,cap,w,ht in items)
   return f'<div class="shots c{cols}">{figs}</div>'
@@ -84,7 +90,8 @@ F=[('folder','Your folders','Pick your Camera folder in one tap, or browse other
 HOME_X=[('loop','Loop until stopped','The show keeps playing until you stop it.'),('play','Resume','Picks up where you left off.'),('music','Background music','Play background music under the slideshow.')]
 BIZ_X=[('pin','PIN kiosk lock','Require a PIN to exit or change settings.'),('log','Proof of play','Keep a log of what played.'),('sync','Library Sync','Sync your library over Wi-Fi.')]
 APP_X=HOME_X+BIZ_X
-page('index.html','Home',hero('Old screens.<br><span class=acc>New scenes.</span>','SceneBuzz turns an Android device, even an old Kindle Fire, a Chromebook or your newest tablet, into a photo-and-video slideshow, digital frame or signage screen.',icon=True)+
+SHOW=clip('scenebuzz-slideshow','SceneBuzz slideshow playing, with the clock and Battery overlay','Slideshow',480,758)
+page('index.html','Home',hero('Old screens.<br><span class=acc>New scenes.</span>','SceneBuzz turns an Android device, even an old Kindle Fire, a Chromebook or your newest tablet, into a photo-and-video slideshow, digital frame or signage screen.',media=SHOW)+
  f'<div class=w><div class=doors><a class="door d1" href=home.html>{ic("home")}<h2>For Home</h2><p>A family frame on an old tablet or TV. Relive the trips.</p></a><a class="door d2" href=business.html>{ic("biz")}<h2>For Business</h2><p>Menus, promos and lobby screens without the signage bill.</p></a></div></div>'+
  sec('Simple by design','Pick a folder, press play. Everything else is optional.',cards(F[:4],4))+
  sec('Works on what you already own','',f'<div class=stack>{cards([("frame","Kindle Fire & old tablets","The tablet in the drawer makes a perfect frame."),("frame","Chromebook","A big, bright screen for a slideshow or signage."),("frame","Fold & newer phones","Prop it open and let it play.")],3)}{shots([S_PLAY,S_HOME,S_BIZ],3)}</div>','dark'),DESC)
@@ -94,8 +101,9 @@ page('home.html','For Home',hero('The family frame <span class=acc>you already o
 page('business.html','For Business',hero('Signage, <span class=acc>without the setup.</span>','Run menus, promos and lobby loops on an Android screen you already have.')+
  sec('Built for small spaces','A screen that sells for you.',cards([('biz','Cafe menus and promos','Loop today’s specials and offers.'),('frame','Salon and lobby screens','Show your work while guests wait.'),('home','Real estate open house','A gallery of the listing on a tablet in the kitchen.'),('play','Event displays','Photo and video loops for the venue.'),('logo','Small retail','Add your logo to every video.'),('user','One profile per screen','“Window”, “Counter”, “Lobby”, each with its own settings.')],3))+
  sec('Biz Mode','Kiosk lock, a proof-of-play log, and Library Sync over Wi-Fi.',f'<div class=stack>{shots([S_BIZ,S_PLAY],2)}{cards(BIZ_X,3)}</div>','dark'),'Biz Mode adds a PIN kiosk lock, a proof-of-play log, and Library Sync over Wi-Fi.')
+SETUP=clip('scenebuzz-setup','SceneBuzz walkthrough for creating a profile and its settings','Setup',480,758,lazy=True)
 page('how-it-works.html','How it works',hero('Up and running <span class=acc>in minutes.</span>','Four steps. No account maze.','')+
- sec('How it works','',f'<div class="g g4 steps">'+''.join(f'<div class="card step"><h3>{a}</h3><p>{b}</p></div>' for a,b in [('Install','Get SceneBuzz on your Android device.'),('Pick a folder','Tap your Camera folder, or browse other folders.'),('Tune it','Set photo time, transitions and fit mode.'),('Press play','Your show starts. Library Sync can refresh it over Wi-Fi.')])+'</div>'+PLAY.replace('class=soon','class=soon style="color:#6d655c"')),'Four steps. No account maze.')
+ sec('How it works','',f'<div class=adjust>{SETUP}<div class="g g2 steps">'+''.join(f'<div class="card step"><h3>{a}</h3><p>{b}</p></div>' for a,b in [('Install','Get SceneBuzz on your Android device.'),('Pick a folder','Tap your Camera folder, or browse other folders.'),('Tune it','Set photo time, transitions and fit mode.'),('Press play','Your show starts. Library Sync can refresh it over Wi-Fi.')])+'</div></div><div class=more>'+PLAY.replace('class=soon','class=soon style="color:#6d655c"')+'</div>'),'Four steps. No account maze.')
 ADJUST=['Display orientation','Clock and date overlay','Silence alerts','Transition style','Prefer faces when cropping','Background music','Auto-start on boot','Proof of play','Library Sync over Wi-Fi','A PIN to exit or change settings']
 page('features.html','Features',hero('Everything you need. <span class=acc>Nothing you don’t.</span>','The full feature list.','')+
  sec('Everything is adjustable','Basic, Advanced, and Biz Mode.',f'<div class=adjust>{demo()}<ul class=opts>'+''.join(f'<li>{t}</li>' for t in ADJUST)+'</ul></div>','dark')+
@@ -115,7 +123,7 @@ def publish_assets():
   src_dir=os.path.join(root,'assets')
   out_dir=os.path.join(os.getcwd(),'assets')
   os.makedirs(out_dir,exist_ok=True)
-  for name in ('scenebuzz-settings.webm','scenebuzz-settings.mp4','scenebuzz-settings-poster.jpg'):
+  for name in ('scenebuzz-settings.webm','scenebuzz-settings.mp4','scenebuzz-settings-poster.jpg','scenebuzz-slideshow.webm','scenebuzz-slideshow.mp4','scenebuzz-slideshow-poster.jpg','scenebuzz-setup.webm','scenebuzz-setup.mp4','scenebuzz-setup-poster.jpg'):
     src=os.path.join(src_dir,name)
     dst=os.path.join(out_dir,name)
     if not os.path.isfile(src): raise SystemExit('missing '+src)
