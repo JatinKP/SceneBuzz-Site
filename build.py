@@ -48,11 +48,14 @@ footer b{color:#111827!important;font-size:16px}footer a{text-decoration:none;ma
 .phone{margin:0 auto;width:100%;max-width:250px;background:#1f2937;border-radius:28px;padding:10px 10px 16px;box-shadow:0 8px 18px rgba(17,24,39,.14)}
 .phone video{display:block;width:100%;height:auto;object-fit:contain;border-radius:18px;background:#000}
 .adjust .steps{grid-template-columns:1fr 1fr}
+.stills{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start}
+.still{margin:0}.still img{display:block;width:100%;height:auto;border-radius:18px;box-shadow:0 8px 18px rgba(17,24,39,.14);background:#111}
+.still figcaption{margin:8px 0 0;text-align:center;color:#4b5563;font-size:13px;font-weight:600}
 .phone figcaption{margin:8px 0 0;text-align:center;color:#e5e7eb;font-size:12px;font-weight:600}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0;padding:0;list-style:none}
 .opts li{background:#fff;border:1px solid #f3f4f6;border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;color:#111827}
 @media(max-width:980px){.g4{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:820px){nav{display:none}.doors,.g3,.shots.c3,.shots.c2,.adjust,.hero-row{grid-template-columns:1fr}.hero{padding:16px 0 18px}section{padding:26px 0}header .w{height:64px}.phone{max-width:200px}.hero-row{text-align:center;justify-items:center;gap:12px}.hero-row h1,.hero-row p.lead{text-align:center}.hero-row p.lead{margin:0 auto}.hero-row .phone{max-width:168px}}
+@media(max-width:820px){nav{display:none}.doors,.g3,.shots.c3,.shots.c2,.adjust,.hero-row,.stills{grid-template-columns:1fr}.hero{padding:16px 0 18px}section{padding:26px 0}header .w{height:64px}.phone{max-width:200px}.hero-row{text-align:center;justify-items:center;gap:12px}.hero-row h1,.hero-row p.lead{text-align:center}.hero-row p.lead{margin:0 auto}.hero-row .phone{max-width:168px}.still{max-width:280px;margin:0 auto}}
 @media(max-width:520px){.g4,.g2{grid-template-columns:1fr}}'''
 def page(f,title,body,desc=DESC):
   nav=''.join(f'<a href="{h}"{" class=on" if h==f else ""}>{t}</a>' for h,t in NAV[1:])
@@ -79,6 +82,9 @@ def clip(stem,label,caption,w,h,lazy=False):
   return f'<figure class=phone><video width={w} height={h} poster=assets/{stem}-poster.jpg autoplay muted loop playsinline preload=metadata{lazy_attr} aria-label="{label}"><source src=assets/{stem}.webm type=video/webm><source src=assets/{stem}.mp4 type=video/mp4></video><figcaption>{caption}</figcaption></figure>'
 def demo():
   return clip('scenebuzz-settings','SceneBuzz Settings, scrolling through Basic, Advanced, and Biz Mode','Settings',540,854,lazy=True)
+def stills(items):
+  figs=''.join(f'<figure class=still><img src=assets/{src} alt="{alt}" width={w} height={ht} loading=lazy><figcaption>{cap}</figcaption></figure>' for src,alt,cap,w,ht in items)
+  return f'<div class=stills>{figs}</div>'
 def shots(items,cols):
   figs=''.join(f'<figure class=shot><img src=images/{src} alt="{alt}" width={w} height={ht}><figcaption>{cap}</figcaption></figure>' for src,alt,cap,w,ht in items)
   return f'<div class="shots c{cols}">{figs}</div>'
@@ -109,8 +115,9 @@ page('features.html','Features',hero('Everything you need. <span class=acc>Nothi
  sec('Everything is adjustable','Basic, Advanced, and Biz Mode.',f'<div class=adjust>{demo()}<ul class=opts>'+''.join(f'<li>{t}</li>' for t in ADJUST)+'</ul></div>','dark')+
  sec('Features','',cards(F,4))+
  sec('In the app','Loop, resume, background music, and Biz Mode, as they appear in the app.',f'<div class=stack>{cards(APP_X,3)}{shots([S_PLAY,S_HOME,S_PROFILE,S_BIZ],2)}</div>','dark'),'SceneBuzz features, including loop, resume, background music, and Biz Mode.')
+PHONE=[('profiles.webp','Slide profiles: Living Room and Front Counter','Slide profiles',640,1011),('play-mode.webp','Name a play mode','Name a play mode',640,1011),('photo-display.webp','Photo display set to Fit, with crossfade, slide, zoom, and fade to black','Photo display',640,1011)]
 page('screenshots.html','Screenshots',hero('A look <span class=acc>inside.</span>','Slideshow, slide profiles, profile settings, and Biz Mode.','')+
- sec('Screenshots','',shots([(S_PLAY[0],S_PLAY[1],'Slideshow and transitions',*S_PLAY[3:]),(S_HOME[0],S_HOME[1],'Slide profiles',*S_HOME[3:]),(S_PROFILE[0],S_PROFILE[1],'Tune this profile',*S_PROFILE[3:]),(S_BIZ[0],S_BIZ[1],'Biz Mode',*S_BIZ[3:])],2)),'Screenshots of the slideshow, slide profiles, profile settings, and Biz Mode.')
+ sec('Screenshots','',f'<div class=stack>{shots([(S_PLAY[0],S_PLAY[1],"Slideshow and transitions",*S_PLAY[3:]),(S_HOME[0],S_HOME[1],"Slide profiles",*S_HOME[3:]),(S_PROFILE[0],S_PROFILE[1],"Tune this profile",*S_PROFILE[3:]),(S_BIZ[0],S_BIZ[1],"Biz Mode",*S_BIZ[3:])],2)}{stills(PHONE)}</div>'),'Screenshots of the slideshow, slide profiles, profile settings, and Biz Mode.')
 Q=[('Which devices does it run on?','Android devices, including old Kindle Fire tablets, Chromebooks and newer phones and tablets.'),('Where do photos come from?','Local folders on your device. In Settings → folders, pick the Camera folder, or browse other folders.'),('Will my photos be cropped?','Not with “fit whole photo”. The edges get a dimmed or blurred version of the photo.'),('How long is each photo shown?','30 seconds by default, adjustable up to 180 seconds. Transitions are 2 seconds by default.'),('Can I run more than one setup?','Yes. Create profiles like “Living Room”.'),('What is Biz Mode?','It can require a PIN to exit or change settings, keep a log of what played, and sync your library over Wi-Fi.'),('When is it available?','SceneBuzz is in Google Play closed testing. The public release is coming soon.'),('Need more help?','Open Help from the app menu. For anything else, email <a href="mailto:support@389.one">support@389.one</a>.')]
 page('faq.html','Help & FAQ',hero('Help <span class=acc>& FAQ.</span>','','')+'<section><div class="w prose">'+''.join(f'<details open><summary>{q}</summary><p>{a}</p></details>' for q,a in Q)+'</div></section>','Answers on devices, photos, timing, profiles, and Biz Mode, plus how to reach Help.')
 page('privacy.html','Privacy',hero('Privacy policy','<span class=draft>DRAFT</span> Placeholder text. Not final.','')+'<section><div class="w prose"><span class=draft>DRAFT</span><h3>Overview</h3><p>[Placeholder] This page will describe how SceneBuzz (com.sceneframe.app) handles data.</p><h3>Photos and videos</h3><p>[Placeholder] SceneBuzz plays media from local folders you choose on your device.</p><h3>Contact</h3><p>Questions: <a href="mailto:support@389.one">support@389.one</a></p></div></section>','Draft privacy policy for SceneBuzz.')
@@ -123,7 +130,7 @@ def publish_assets():
   src_dir=os.path.join(root,'assets')
   out_dir=os.path.join(os.getcwd(),'assets')
   os.makedirs(out_dir,exist_ok=True)
-  for name in ('scenebuzz-settings.webm','scenebuzz-settings.mp4','scenebuzz-settings-poster.jpg','scenebuzz-slideshow.webm','scenebuzz-slideshow.mp4','scenebuzz-slideshow-poster.jpg','scenebuzz-setup.webm','scenebuzz-setup.mp4','scenebuzz-setup-poster.jpg'):
+  for name in ('scenebuzz-settings.webm','scenebuzz-settings.mp4','scenebuzz-settings-poster.jpg','scenebuzz-slideshow.webm','scenebuzz-slideshow.mp4','scenebuzz-slideshow-poster.jpg','scenebuzz-setup.webm','scenebuzz-setup.mp4','scenebuzz-setup-poster.jpg','profiles.webp','play-mode.webp','photo-display.webp'):
     src=os.path.join(src_dir,name)
     dst=os.path.join(out_dir,name)
     if not os.path.isfile(src): raise SystemExit('missing '+src)
