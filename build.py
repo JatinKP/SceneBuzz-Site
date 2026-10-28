@@ -77,10 +77,10 @@ def sec(h,s,inner,cls=''):
   sub=f'<p class=sub>{s}</p>' if s else ''
   c=f' class="{cls}"' if cls else ''
   return f'<section{c}><div class=w><h2>{h}</h2>{sub}{inner}</div></section>'
-def clip(stem,label,caption,w,h,lazy=False):
+def clip(stem,label,caption,w,h,lazy=False,preload='metadata'):
   lazy_attr=' loading=lazy' if lazy else ''
-  v='?v=3' if stem=='scenebuzz-slideshow' else '?v=2' if stem=='scenebuzz-setup' else ''
-  return f'<figure class=phone><video width={w} height={h} poster=assets/{stem}-poster.jpg{v} autoplay muted loop playsinline preload=metadata{lazy_attr} aria-label="{label}"><source src=assets/{stem}.webm{v} type=video/webm><source src=assets/{stem}.mp4{v} type=video/mp4></video><figcaption>{caption}</figcaption></figure>'
+  v='?v=4' if stem=='scenebuzz-slideshow' else '?v=2' if stem=='scenebuzz-setup' else ''
+  return f'<figure class=phone><video width={w} height={h} poster=assets/{stem}-poster.jpg{v} autoplay muted loop playsinline preload={preload}{lazy_attr} aria-label="{label}"><source src=assets/{stem}.webm{v} type=video/webm><source src=assets/{stem}.mp4{v} type=video/mp4></video><figcaption>{caption}</figcaption></figure>'
 def demo():
   return clip('scenebuzz-settings','SceneBuzz Settings, scrolling through Basic, Advanced, and Biz Mode','Settings',540,854,lazy=True)
 def stills(items):
@@ -97,7 +97,7 @@ F=[('folder','Your folders','Pick your Camera folder in one tap, or browse other
 HOME_X=[('loop','Loop until stopped','The show keeps playing until you stop it.'),('play','Resume','Picks up where you left off.'),('music','Background music','Play background music under the slideshow.')]
 BIZ_X=[('pin','PIN kiosk lock','Require a PIN to exit or change settings.'),('log','Proof of play','Keep a log of what played.'),('sync','Library Sync','Sync your library over Wi-Fi.')]
 APP_X=HOME_X+BIZ_X
-SHOW=clip('scenebuzz-slideshow','SceneBuzz slideshow playing, with the clock and Battery overlay','Slideshow',480,758)
+SHOW=clip('scenebuzz-slideshow','SceneBuzz slideshow playing, fading through four planet photos','Slideshow',480,758,preload='auto')
 page('index.html','Home',hero('Old screens.<br><span class=acc>New scenes.</span>','SceneBuzz turns an Android device, even an old Kindle Fire, a Chromebook or your newest tablet, into a photo-and-video slideshow, digital frame or signage screen.',media=SHOW)+
  f'<div class=w><div class=doors><a class="door d1" href=home.html>{ic("home")}<h2>For Home</h2><p>A family frame on an old tablet or TV. Relive the trips.</p></a><a class="door d2" href=business.html>{ic("biz")}<h2>For Business</h2><p>Menus, promos and lobby screens without the signage bill.</p></a></div></div>'+
  sec('Simple by design','Pick a folder, press play. Everything else is optional.',cards(F[:4],4))+
