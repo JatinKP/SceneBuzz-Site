@@ -43,7 +43,7 @@ details{border:1px solid #f3f4f6;border-radius:12px;padding:12px 16px;margin-bot
 .draft{display:inline-block;background:#ffedd5;color:#c2410c;font-weight:700;padding:3px 10px;border-radius:6px;letter-spacing:.08em;font-size:12px}
 footer{background:#f9fafb;border-top:1px solid #e5e7eb;color:#4b5563;padding:28px 0 22px;font-size:14px;text-align:center}footer .w>div:first-child{padding-bottom:14px;border-bottom:1px solid #e5e7eb;margin-bottom:14px}
 footer b{color:#111827!important;font-size:16px}footer a{text-decoration:none;margin:0 9px;color:#4b5563}footer .w>div:last-child a:first-child,footer a[href^=mailto]{color:#ea580c}footer a:hover{color:#ea580c}
-.prose{max-width:760px}.prose h3{margin:22px 0 .3em}.prose p{margin:0 0 .85em;color:#374151}.prose a{color:#ea580c}
+.prose{max-width:760px}.prose h3{margin:22px 0 .3em}.prose p{margin:0 0 .85em;color:#374151}.prose a{color:#ea580c}.credits{margin:22px 0 0;font-size:13px;color:#6b7280}
 .adjust{display:grid;grid-template-columns:minmax(180px,250px) 1fr;gap:22px;align-items:center}
 .phone{margin:0 auto;width:100%;max-width:250px;background:#1f2937;border-radius:28px;padding:10px 10px 16px;box-shadow:0 8px 18px rgba(17,24,39,.14)}
 .phone video{display:block;width:100%;height:auto;object-fit:contain;border-radius:18px;background:#000}
@@ -79,7 +79,7 @@ def sec(h,s,inner,cls=''):
   return f'<section{c}><div class=w><h2>{h}</h2>{sub}{inner}</div></section>'
 def clip(stem,label,caption,w,h,lazy=False):
   lazy_attr=' loading=lazy' if lazy else ''
-  v='?v=2' if stem in ('scenebuzz-slideshow','scenebuzz-setup') else ''
+  v='?v=3' if stem=='scenebuzz-slideshow' else '?v=2' if stem=='scenebuzz-setup' else ''
   return f'<figure class=phone><video width={w} height={h} poster=assets/{stem}-poster.jpg{v} autoplay muted loop playsinline preload=metadata{lazy_attr} aria-label="{label}"><source src=assets/{stem}.webm{v} type=video/webm><source src=assets/{stem}.mp4{v} type=video/mp4></video><figcaption>{caption}</figcaption></figure>'
 def demo():
   return clip('scenebuzz-settings','SceneBuzz Settings, scrolling through Basic, Advanced, and Biz Mode','Settings',540,854,lazy=True)
@@ -120,7 +120,8 @@ PHONE=[('profiles.webp','Slide profiles: Living Room and Front Counter','Slide p
 page('screenshots.html','Screenshots',hero('A look <span class=acc>inside.</span>','Slideshow, slide profiles, profile settings, and Biz Mode.','')+
  sec('Screenshots','',f'<div class=stack>{shots([(S_PLAY[0],S_PLAY[1],"Slideshow and transitions",*S_PLAY[3:]),(S_HOME[0],S_HOME[1],"Slide profiles",*S_HOME[3:]),(S_PROFILE[0],S_PROFILE[1],"Tune this profile",*S_PROFILE[3:]),(S_BIZ[0],S_BIZ[1],"Biz Mode",*S_BIZ[3:])],2)}{stills(PHONE)}</div>'),'Screenshots of the slideshow, slide profiles, profile settings, and Biz Mode.')
 Q=[('Which devices does it run on?','Android devices, including old Kindle Fire tablets, Chromebooks and newer phones and tablets.'),('Where do photos come from?','Local folders on your device. In Settings → folders, pick the Camera folder, or browse other folders.'),('Will my photos be cropped?','Not with “fit whole photo”. The edges get a dimmed or blurred version of the photo.'),('How long is each photo shown?','30 seconds by default, adjustable up to 180 seconds. Transitions are 2 seconds by default.'),('Can I run more than one setup?','Yes. Create profiles like “Living Room”.'),('What is Biz Mode?','It can require a PIN to exit or change settings, keep a log of what played, and sync your library over Wi-Fi.'),('When is it available?','SceneBuzz is in Google Play closed testing. The public release is coming soon.'),('Need more help?','Open Help from the app menu. For anything else, email <a href="mailto:support@389.one">support@389.one</a>.')]
-page('faq.html','Help & FAQ',hero('Help <span class=acc>& FAQ.</span>','','')+'<section><div class="w prose">'+''.join(f'<details open><summary>{q}</summary><p>{a}</p></details>' for q,a in Q)+'</div></section>','Answers on devices, photos, timing, profiles, and Biz Mode, plus how to reach Help.')
+CREDIT='Planet images: NASA/JPL-Caltech/Space Science Institute (Saturn, Cassini), NASA/JPL (Neptune, Voyager 2), NASA/JPL/USGS (Mars, Viking).'
+page('faq.html','Help & FAQ',hero('Help <span class=acc>& FAQ.</span>','','')+'<section><div class="w prose">'+''.join(f'<details open><summary>{q}</summary><p>{a}</p></details>' for q,a in Q)+f'<p class=credits>Image credits. {CREDIT}</p></div></section>','Answers on devices, photos, timing, profiles, and Biz Mode, plus how to reach Help.')
 ML='https://developers.google.com/ml-kit/android-data-disclosure'
 PRIVACY=[
  ('Your photos, videos and music','SceneBuzz reads the photos, videos and audio files you choose so it can show and play them. They stay on your device. SceneBuzz does not upload them to us or to anyone else.'),
